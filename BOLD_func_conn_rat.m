@@ -1,5 +1,5 @@
 function BOLD_func_conn_rat(varargin)
-%Input: 4D sw* Raw Data Path, Template Path
+%Input: Raw Data Path, Template Path
 %edited by Yi-Tien Li 2020/6/30
 %
 global Tha_Sig BA_Sig data data_d data_c temp
@@ -84,6 +84,6 @@ for kk = 1:size(CorrMat,1)
 end
 sCorrMat = squareform(CorrMat);
 
-save zCorrMat_csf.mat ROI_Sig CorrMat sCorrMat
+save zCorrMat.mat ROI_Sig CorrMat sCorrMat
 cd(CurrentDir);
 end
