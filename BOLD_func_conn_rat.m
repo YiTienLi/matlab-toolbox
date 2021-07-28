@@ -25,7 +25,7 @@ if nargin <2
      csf = MRIread('H:\我的雲端硬碟\MTBI_rat_preprocess\rat_template\sigle_rat_template\wpriors_CSF.nii');
     label = MRIread('E:\Scripts\TT2_Tohoku_labels.nii');
 else
-    mask = MRIread(sprintf('%s\fmask.nii',varargin{2}));
+    mask = MRIread(sprintf('%s\TT2_Tohoku_mask.nii',varargin{2}));
     csf = MRIread(sprintf('%s\wpriors_CSF.nii',varargin{2}));
     label = MRIread(sprintf('%s\TT2_Tohoku_labels.nii',varargin{2}));
 end
