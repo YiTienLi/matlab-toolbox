@@ -1,5 +1,5 @@
 function Tha_Cor_Coh(varargin)
-%Input: 4D sw* Raw Data Path, Template Path
+%Input: Raw Data Path, Template Path
 %edited by Yi-Tien Li 2020/6/30
 %
 % global Tha_Sig BA_Sig data data_d data_c temp
@@ -34,7 +34,6 @@ mask_r = reshape(mask.vol,size(mask.vol,1)*size(mask.vol,2)*size(mask.vol,3),1);
 csf_r = reshape(csf.vol,size(csf.vol,1)*size(csf.vol,2)*size(csf.vol,3),1);
 label_r = reshape(label.vol,size(label.vol,1)*size(label.vol,2)*size(label.vol,3),1);
 
-%%%%%%%加條件 少運算
 %% detrend & band-pass filter
 fprintf('Processing fMRI data : Detrend + Band-pass Filter ...\n');
 data_d = detrend(epi_r,1);
@@ -42,14 +41,9 @@ epi.vol = reshape(data_d,size(epi.vol,1),size(epi.vol,2),size(epi.vol,3),size(ep
 fn_new = ['d_' fn{1}];
 MRIwrite(epi,fn_new,'float');
 
-% data = bandpass(data_d',BP_range,1/TR)';
-% epi.vol = reshape(data,size(epi.vol,1),size(epi.vol,2),size(epi.vol,3),size(epi.vol,4));
-% fn_new = ['b' fn_new];
-% MRIwrite(epi,fn_new,'float');
-
 %% regress out nuisance covariates
 fprintf('Processing fMRI data : Regress out nuisance covariates ...\n');
-cov = [motion6 median(data_d(find(csf_r>0.2),:))'];
+cov = [motion6 mean(data_d(find(csf_r>0.2),:))'];
 % cov = motion6;
 beta = inv(cov'*cov)*cov'*data_d';
 data_c = data_d - (cov*beta)';
@@ -58,21 +52,18 @@ fn_new = ['p' fn_new];
 MRIwrite(epi,fn_new,'float');
 
 %% thalamocortical coherence
-Tha_Sig(1,:) = nanmedian(data_c(find(label_r>=35),:));
+Tha_Sig(1,:) = nanmean(data_c(find(label_r>=35),:));
 % sk_list = [4 13 52 61];
 h2 = waitbar(0,'Please wait...');
-for ii = 1:34 %BA max(max(max(label_r)))
-%     if ismember(ii,sk_list)
-%     else
+for ii = 1:34 
         temp = nanmedian(data_c(label_r==ii,:),1);
         BA_Sig(ii,:) = temp;
         [cxy, f] =mscohere(Tha_Sig,temp,[],[],[],1);
         TCcxy(ii,:) = cxy;
         TCf(ii,:) = f;
         waitbar(ii/102,h2,sprintf('Cal for No.%d, %0.2f%%\n',ii,100*ii/102));
-%     end
 end
 close(h2);
-save zTCcoh.mat TCcxy TCf Tha_Sig BA_Sig;
+save TCcoh.mat TCcxy TCf Tha_Sig BA_Sig;
 cd(CurrentDir);
 end
