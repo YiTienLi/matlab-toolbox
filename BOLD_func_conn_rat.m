@@ -10,7 +10,7 @@ BP_range = [0.01 0.1];
 CurrentDir = pwd;
 cd(varargin{1});
 fprintf('Loading fMRI data...\n');
-fn = cellstr(ls('fMRI2mni.ni*'));
+fn = cellstr(ls('fMRI2Atlas.ni*'));
 if strcmp(fn{1}(end-1:end),'gz')>0
         gunzip(fn{1});
         fn = cellstr(ls('fMRI2mni.nii'));
