@@ -13,7 +13,7 @@ fprintf('Loading fMRI data...\n');
 fn = cellstr(ls('fMRI2Atlas.ni*'));
 if strcmp(fn{1}(end-1:end),'gz')>0
         gunzip(fn{1});
-        fn = cellstr(ls('fMRI2mni.nii'));
+        fn = cellstr(ls('fMRI2Atlas.nii'));
 end
 epi = MRIread(fn{1});
 epi_r = reshape(epi.vol,size(epi.vol,1)*size(epi.vol,2)*size(epi.vol,3),size(epi.vol,4));
